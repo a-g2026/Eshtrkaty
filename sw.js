@@ -1,5 +1,5 @@
 /* اشتركاتي — service worker: يعمل بدون إنترنت ويتحدث تلقائياً عند رفع نسخة جديدة */
-const CACHE = "ishtirakati-v1";
+const CACHE = "ishtirakati-v5";
 const CORE = ["./", "index.html", "manifest.json", "icon-192.png", "icon-512.png", "apple-touch-icon.png", "favicon.png", "icon.svg"];
 
 self.addEventListener("install", (e) => {
@@ -18,7 +18,7 @@ self.addEventListener("fetch", (e) => {
     // الصفحة: الشبكة أولاً (لتصلك آخر نسخة) ثم النسخة المخزنة عند انقطاع الإنترنت
     if (req.mode === "navigate" || url.pathname.endsWith("/index.html") || url.pathname.endsWith("/")) {
       e.respondWith(
-        fetch(req)
+        fetch(req, { cache: "no-cache" })
           .then((res) => { const copy = res.clone(); caches.open(CACHE).then((c) => c.put("index.html", copy)); return res; })
           .catch(() => caches.match("index.html", { ignoreSearch: true }).then((r) => r || caches.match("./")))
       );
